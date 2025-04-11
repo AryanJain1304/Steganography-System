@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steganography Encoding</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-top: 50px;
+        }
+        .container {
+            width: 60%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        label {
+            font-size: 18px;
+            color: #333;
+        }
+        input[type="file"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #encodedFile {
+            margin-top: 20px;
+            text-align: center;
+        }
+        a {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bank Portal: Encode Customer Credentials</h1>
+
+    <div class="container">
+        <form id="encodeForm" enctype="multipart/form-data">
+            <label for="file">Select Medium file:</label>
+            <input type="file" id="file" name="file" accept=".png,.jpg,.jpeg,.wav,.mp3" required>
+            
+            <label for="text_file">Select Credentials File</label>
+            <input type="file" id="text_file" name="text_file" accept=".txt" required><br><br>
+            
+            <button type="submit">Encode</button>
+        </form>
+    </div>
+
+    <script>
+        const encodeForm = document.getElementById('encodeForm');
+        const downloadEncodedFile = document.getElementById('downloadEncodedFile');
+        const downloadKeyFile = document.getElementById('downloadKeyFile');
+
+        encodeForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const file = document.getElementById('file').files[0];
+            const textFile = document.getElementById('text_file').files[0];
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('text_file', textFile);
+
+            const response = await fetch('http://127.0.0.1:5000/encode', {
+                method: 'POST',
+                body: formData
+            });
+
+            const [encodedFileResponse, keyFileResponse] = await Promise.all([response.blob(), response.blob()]);
+            const encodedFileURL = window.URL.createObjectURL(encodedFileResponse);
+            const keyFileURL = window.URL.createObjectURL(keyFileResponse);
+
+            downloadEncodedFile.href = encodedFileURL;
+            downloadKeyFile.href = keyFileURL;
+            document.getElementById('encodedFile').style.display = 'inline-block';
+        });
+    </script>
+</body>
+</html>

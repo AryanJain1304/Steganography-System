@@ -1,0 +1,7 @@
+{
+  "name": "John Doe",
+  "account_number": "1234567890",
+  "routing_number": "021000021",
+  "username": "johndoe93",
+  "password": "P@ssw0rd123"
+}
